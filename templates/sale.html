@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% block content %}
+
+	<div class="index-1" id="printdiv">
+
+		<div id="tablediv" class="shadow p-3 mb-5 rounded table-responsive">
+			<div class="container-project-icons" id="headingdv" style="text-align:center;">
+				<h1 style="text-decoration: underline;">ALL SALES</h1>
+				<div style="display: flex; justify-content: space-between;  padding-bottom: 0.5vh;">
+					<div>
+						<a href="{{ url_for('add_sale', id=0) }}" class="btn btn-primary noprint">Add New Sale</a>
+						<a href="{{ url_for('quote_bill') }}" class="btn btn-info noprint">Go to Billing Page</a>
+					</div>
+					<a href="" class="btn btn-warning noprint" onclick="printContent('printdiv')">Print</a>
+				</div>
+			</div>
+			<table id="table" class="table table-light table-hover table-striped table-bordered" style="vertical-align: middle;">
+				<thead>
+					<tr style="text-align: center;">
+						<th style="width: 5vh;">Sr. #</th>
+						<th style="width: 10vh;">Date Added</th>
+						<th style="width: 8vh;">Invoice #</th>
+						<th style="width: 12vh;">Product Code</th>
+						<th style="width: 40vh;">Product Name</th>
+						<th style="width: 10vh;">Length</th>
+						<th style="width: 10vh;">Quantity</th>
+						<th style="width: 12vh;">Rate</th>
+						<th style="width: 14vh;">Sub-Total</th>
+						<th class="noprint" style="width: 6vh;">Action</th>
+					</tr>
+				</thead>
+				<tbody class="table-group-divider">
+					{% for sale in sales %}
+						<tr>
+							<td></td>
+							<td>{{ sale.sale_date.strftime('%d-%b-%y') }}</td>
+							<td>{{ sale.invoice_no }}</td>
+							<td>{{ sale.item_code }}</td>
+							<td>{{ sale.item_name }}</td>
+							<td class="length" style="text-align: right;">
+								{{ sale.item_length }}
+							</td>
+							<td class="count-qty" style="text-align: right;">
+								{{ sale.item_qty }}
+							</td>
+							<td class="rate" style="text-align: right;">
+								{{ sale.item_rate }}
+							</td>
+							<td class="count-sub-total" style="text-align: right;">
+								{{ sale.item_qty * sale.item_rate }}
+							</td>
+							<td class="noprint">
+								<a href="{{ url_for('update_sale_entry', id=sale.id) }}" style="margin-right: 1vh;">
+									<i class="fa fa-edit" style="color: blue;"></i>
+								</a>
+								<a href="{{ url_for('delete_sale_item', id=sale.id) }}" onclick="return confirm('Are you sure you want to delete this item?')">
+									<i class="fa fa-trash" style="color: red;"></i>
+								</a>
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+
+		<style type="text/css">
+			.index-1 {
+				height: 92vh;
+				display: block;
+				flex-wrap: nowrap;
+				justify-content: center;
+				text-align: center;
+				color: black;
+				font-weight: bold;
+				padding-top: 1vh;
+			}
+			a {
+				text-decoration: none;
+				color: inherit;
+			}
+
+			/* FOR INCREMENTING ROW SERIAL NUMBER */
+			table {
+			  counter-reset: rowNumber;
+			  table-layout: fixed;
+			  width: auto;
+			}
+
+			table tbody tr {
+			  counter-increment: rowNumber;
+			}
+
+			table tbody tr td:first-child::after {
+			  content: counter(rowNumber);
+			  min-width: 1em;
+			  margin-right: 0.5em;
+			}
+			/* ############################# */
+		</style>
+	</div>
+
+
+	<script type="text/javascript">
+		// PRINT PAGE
+		function printContent(el) {
+			var restorepage = document.body.innerHTML;
+			var printcontent = document.getElementById(el).innerHTML;
+			document.body.innerHTML = printcontent;
+			document.title = "Sales List";
+			window.print();
+			document.body.innerHTML = restorepage;
+	    }
+
+	    // SUM THE SUB-TOTAL COLUMN
+		var tds = document.getElementById('table').getElementsByTagName('td');
+		var sum_qty = 0;
+		var sum_sub_total = 0;
+		for(var i = 0; i < tds.length; i++) {
+			if(tds[i].className == 'length') {
+				tds[i].innerHTML = isNaN(tds[i].innerHTML) ? 0 : parseInt(tds[i].innerHTML).toLocaleString('en-US')
+				if(tds[i].innerHTML == 0) {
+					tds[i].innerHTML = '-'
+				}
+			}
+			if(tds[i].className == 'count-qty') {
+				sum_qty += isNaN(tds[i].innerHTML) ? 0 : parseInt(tds[i].innerHTML);
+				tds[i].innerHTML = isNaN(tds[i].innerHTML) ? 0 : parseInt(tds[i].innerHTML).toLocaleString('en-US')
+				if(tds[i].innerHTML == 0) {
+					tds[i].innerHTML = '-'
+				}
+			}
+			if(tds[i].className == 'rate') {
+				tds[i].innerHTML = isNaN(tds[i].innerHTML) ? 0 : parseInt(tds[i].innerHTML).toLocaleString('en-US')
+				if(tds[i].innerHTML == 0) {
+					tds[i].innerHTML = '-'
+				}
+			}
+			if(tds[i].className == 'count-sub-total') {
+				sum_sub_total += isNaN(tds[i].innerHTML) ? 0 : parseInt(tds[i].innerHTML);
+				tds[i].innerHTML = isNaN(tds[i].innerHTML) ? 0 : parseInt(tds[i].innerHTML).toLocaleString('en-US')
+				if(tds[i].innerHTML == 0) {
+					tds[i].innerHTML = '-'
+				}
+			}
+		}
+		document.getElementById('table').innerHTML += '<tfoot><tr style="text-align: center;"><th colspan="5">Grand Total</th><th style="text-align: right;">' + sum_qty.toLocaleString('us-US') + '</th><th></th><th style="text-align: right;">' + sum_sub_total.toLocaleString('us-US') + '</th></tr></tfoot>';
+
+	</script>
+
+{% endblock %}

@@ -1,0 +1,205 @@
+{% extends 'base.html' %}
+{% block content %}
+
+	<div class="index-1" id="printdiv">
+
+		<div id="tablediv">
+			<div class="container-project-icons" id="headingdv" style="text-align:center;">
+				<h1 style="text-decoration: underline;">All ACCOUNT DETAILS</h1>
+				<div style="display: flex; justify-content: space-between;  padding-bottom: 0.5vh;">
+					<div>
+						<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop1">
+							Add Details
+						</button>
+						<button class="btn btn-info" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDiv" aria-expanded="false" aria-controls="collapseDiv">
+					    	Show All Details
+					  </button>
+					</div>
+					<div class="dropdown">
+						<button class="btn btn-warning dropdown-toggle" type="button" id="dropdownmenubtn" data-bs-toggle="dropdown" aria-expanded="false">
+							Accounts
+						</button>
+						<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+						    <li><a class="dropdown-item" href="{{ url_for('account_details', uid=1, account_title='SELF MEZN', bank_account='SELF MEZN') }}">SELF MEZN</a></li>
+						    <li><a class="dropdown-item" href="{{ url_for('account_details', uid=1, account_title='UHUD MEZN', bank_account='UHUD MEZN') }}">UHUD MEZN</a></li>
+						    <li><a class="dropdown-item" href="{{ url_for('account_details', uid=1, account_title='SELF JC', bank_account='SELF JC') }}">SELF JC</a></li>
+						    <li><a class="dropdown-item" href="{{ url_for('account_details', uid=1, account_title='SELF BAHL', bank_account='SELF BAHL') }}">SELF BAHL</a></li>
+					  </ul>
+					</div>
+				</div>
+			</div>
+			<div class="collapse" id="collapseDiv">
+				<table id="table" class="table" style="vertical-align: middle;">
+					<thead>
+						<tr style="text-align: center;">
+							<th style="width: 6vh;">Sr. #</th>
+							<th style="width: 12vh;">Date Added</th>
+							<th style="width: 14vh;">Bank Account</th>
+							<th style="width: 16vh;">Payer</th>
+							<th style="width: 16vh;">Beneficiary</th>
+							<th style="width: 30vh;">Description</th>
+							<th style="width: 14vh;">Debit</th>
+							<th style="width: 14vh;">Credit</th>
+							<th style="width: 10vh;">TX Tax</th>
+						</tr>
+					</thead>
+					<tbody class="table-group-divider">
+						{% for detail in details %}
+							<tr>
+								<td></td>
+								<td>{{ detail.dated.strftime('%d-%b-%y') }}</td>
+								<td>{{ detail.bank_account }}</td>
+								<td><a href="{{ url_for('account_details', uid=2, account_title=detail.payer, bank_account=detail.bank_account) }}">{{ detail.payer }}</a></td>
+								<td><a href="{{ url_for('account_details', uid=3, account_title=detail.beneficiary, bank_account=detail.bank_account) }}">{{ detail.beneficiary }}</a></td>
+								<td>{{ detail.description }}</td>
+								<td class="debit">{{ detail.debit }}</td>
+								<td class="credit">{{ detail.credit }}</td>
+								<td class="tx-tax">{{ detail.tx_tax }}</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+			<div class="modal fade" id="staticBackdrop1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="staticBackdropLabel">Add Details</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<form method="POST" action="{{ url_for('accounts') }}">
+							<div class="modal-body" style="text-align: left;">
+								{{ form.hidden_tag() }}
+
+								{{ form.bank_account.label(class="form-label") }}
+								{{ form.bank_account(class="form-control") }}
+
+								<input type="checkbox" name="checkbox" id="checkbox">
+								<label>Please Check if this is a Credit Entry</label><br>
+
+								{{ form.payer.label(class="form-label") }}
+								{{ form.payer(class="form-control", disabled=true) }}
+
+								{{ form.beneficiary.label(class="form-label") }}
+								{{ form.beneficiary(class="form-control", disabled=true) }}
+
+								{{ form.description.label(class="form-label") }}
+								{{ form.description(class="form-control", disabled=true) }}
+
+								{{ form.debit.label(class="form-label") }}
+								{{ form.debit(class="form-control", value=0.0, disabled=true) }}
+
+								{{ form.credit.label(class="form-label") }}
+								{{ form.credit(class="form-control", value=0.0, disabled=true) }}
+
+								{{ form.tx_tax.label(class="form-label") }}
+								{{ form.tx_tax(class="form-control", value=0.0, disabled=true) }}
+
+							</div>
+							<div class="modal-footer">
+								{{ form.submit(class="btn btn-primary", onclick="submitFunction()") }}
+				      		</div>
+				      	</form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<style type="text/css">
+			.index-1 {
+				height: 92vh;
+				display: block;
+				flex-wrap: nowrap;
+				justify-content: center;
+				text-align: center;
+				color: black;
+				font-weight: bold;
+				padding-top: 1vh;
+			}
+			a {
+				text-decoration: none;
+				color: inherit;
+			}
+
+			/* FOR INCREMENTING ROW SERIAL NUMBER */
+			table {
+			  counter-reset: rowNumber;
+			  table-layout: fixed;
+			  width: auto;
+			}
+
+			table tbody tr {
+			  counter-increment: rowNumber;
+			  font-weight: 200;
+			}
+
+			table tbody tr td:first-child::after {
+			  content: counter(rowNumber);
+			  min-width: 1em;
+			  margin-right: 0.5em;
+			}
+			/* ############################# */
+		</style>
+	</div>
+
+
+	<script type="text/javascript">
+		const onSelector = document.getElementById('bank_account');
+		onSelector.onchange = function() {
+			document.getElementById('description').disabled = false;
+			document.getElementById('checkbox').checked = false;
+		};
+		const checkbox = document.getElementById('checkbox');
+		checkbox.onchange = function(){
+			if(this.checked){
+				document.getElementById('payer').value = '';
+				document.getElementById('payer').disabled = false;
+				document.getElementById('beneficiary').value = document.getElementById('bank_account').getElementsByTagName('option')[document.getElementById('bank_account').selectedIndex].innerHTML;
+				document.getElementById('beneficiary').disabled = true;
+				document.getElementById('debit').disabled = true;
+				document.getElementById('credit').disabled = false;
+				document.getElementById('tx_tax').disabled = true;
+			}
+			else{
+				document.getElementById('payer').value = document.getElementById('bank_account').getElementsByTagName('option')[document.getElementById('bank_account').selectedIndex].innerHTML;
+				document.getElementById('payer').disabled = true;
+				document.getElementById('beneficiary').value = '';
+				document.getElementById('beneficiary').disabled = false;
+				document.getElementById('debit').disabled = false;
+				document.getElementById('credit').disabled = true;
+				document.getElementById('tx_tax').disabled = false;
+			}
+		};
+		function submitFunction(){
+			document.getElementById('payer').disabled = false;
+			document.getElementById('beneficiary').disabled = false;
+			document.getElementById('description').disabled = false;
+			document.getElementById('debit').disabled = false;
+			document.getElementById('tx_tax').disabled = false;
+	    };
+
+	    var tds = document.getElementById('table').getElementsByTagName('td');
+		for(var i = 0; i < tds.length; i++) {
+			if(tds[i].className == 'debit') {
+				tds[i].innerHTML = isNaN(tds[i].innerHTML) ? 0 : parseInt(tds[i].innerHTML).toLocaleString('en-US')
+				if(tds[i].innerHTML == 0) {
+					tds[i].innerHTML = '-'
+				}
+			}
+			if(tds[i].className == 'credit') {
+				tds[i].innerHTML = isNaN(tds[i].innerHTML) ? 0 : parseInt(tds[i].innerHTML).toLocaleString('en-US')
+				if(tds[i].innerHTML == 0) {
+					tds[i].innerHTML = '-'
+				}
+			}
+			if(tds[i].className == 'tx-tax') {
+				tds[i].innerHTML = isNaN(tds[i].innerHTML) ? 0 : parseInt(tds[i].innerHTML).toLocaleString('en-US')
+				if(tds[i].innerHTML == 0) {
+					tds[i].innerHTML = '-'
+				}
+			}
+		}
+
+	</script>
+
+{% endblock %}

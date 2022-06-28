@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+	<div class="index-1">
+		<h1 style="text-decoration: underline;">EDIT INVOICE DETAILS</h1>
+		<form action="/shop/quote-bill/update-invoice-details/{{ update_invoice.id }}" method="POST">
+
+			<div id="form">
+				{{ form.hidden_tag() }}
+
+				{{ form.customer.label(class="form-label") }}
+				{{ form.customer(class="form-control", autofocus=true, value=update_invoice.customer) }}
+
+				{{ form.sale_type.label(class="form-label") }}
+				{{ form.sale_type(class="form-control", value=update_invoice.sale_type) }}
+
+				{{ form.discount.label(class="form-label") }}
+				{{ form.discount(class="form-control", value=update_invoice.discount) }}
+
+				{{ form.remarks.label(class="form-label") }}
+				{{ form.remarks(class="form-control", value=update_invoice.remarks) }}
+			</div>
+
+			<div id="submit-btn">
+				<br>
+				{{ form.submit(class="btn btn-primary", value="UPDATE INVOICE DETAILS", style="text-align: center;") }}

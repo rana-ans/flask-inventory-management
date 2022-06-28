@@ -1,0 +1,219 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+	<div class="index-1" id="printdiv">
+
+		<!-- Modal -->
+		<div class="modal fade noprint" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h5 class="modal-title" id="addModalLabel">Add Item Purchase</h5>
+		        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+		      </div>
+		      <form method="POST">
+		      	<div class="modal-body">
+					
+					{{ form.hidden_tag() }}
+
+					{{ form.item_vendor.label(class="form-label") }}
+					{{ form.item_vendor(class="form-control", autofocus=true) }}
+
+					{{ form.item_code.label(class="form-label") }}
+					{{ form.item_code(class="form-control") }}
+
+					{{ form.item_name.label(class="form-label") }}
+					{{ form.item_name(class="form-control", disabled=true) }}
+
+					{{ form.item_length.label(class="form-label") }}
+					{{ form.item_length(class="form-control", value=0.00) }}
+
+					{{ form.item_qty.label(class="form-label") }}
+					{{ form.item_qty(class="form-control", value=0) }}
+					<p id="available-qty" style="font-size: 10px; color: red;"></p>
+
+					{{ form.item_rate.label(class="form-label") }}
+					{{ form.item_rate(class="form-control", value=0) }}
+
+					{{ form.remarks.label(class="form-label") }}
+					{{ form.remarks(class="form-control") }}
+
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+					{{ form.submit_item(class="btn btn-primary") }}
+				</div>
+			  </form>
+		    </div>
+		  </div>
+		</div>
+
+		<div id="tablediv" class="shadow p-3 mb-5 rounded table-responsive">
+			<div class="container-project-icons" id="headingdv" style="text-align:center;">
+				<h1 style="text-decoration: underline;">PURCHASE LIST</h1>
+				<div style="display: flex; justify-content: space-between;  padding-bottom: 0.5vh;">
+					<!-- Button trigger modal -->
+					<button type="button" class="btn btn-primary noprint" data-bs-toggle="modal" data-bs-target="#addModal">
+						Add New Item
+					</button>
+					<a href="" class="btn btn-warning noprint" onclick="printContent('printdiv')">Print</a>
+				</div>
+			</div>
+			<table id="table" class="table table-light table-hover table-striped table-bordered" style="vertical-align: middle;">
+				<thead>
+					<tr style="text-align: center;">
+						<th style="width: 7vh;">Sr. #</th>
+						<th style="width: 8vh;">UID</th>
+						<th style="width: 12vh;">Last Updated</th>
+						<th style="width: 12vh;">Product Code</th>
+						<th style="width: 40vh;">Product Name</th>
+						<th style="width: 10vh;">Length</th>
+						<th style="width: 10vh;">Quantity</th>
+						<th style="width: 12vh;">Rate</th>
+						<th style="width: 14vh;">Sub-Total</th>
+						<th style="width: 18vh;">Remarks</th>
+					</tr>
+				</thead>
+				<tbody class="table-group-divider">
+					{% for item in purchase %}
+						<tr>
+							<td></td>
+							<td>{{ item.id }}</td>
+							<td>{{ item.item_date.strftime('%d-%b-%y') }}</td>
+							<td>{{ item.item_code }}</td>
+							<td>{{ item.item_name }}</td>
+							<td class="length" style="text-align: right;">
+								{{ item.item_length }}
+							</td>
+							<td class="count-qty" style="text-align: right;">
+								{{ item.item_qty }}
+							</td>
+							<td class="rate" style="text-align: right;">
+								{{ item.item_rate }}
+							</td>
+							<td class="count-sub-total" style="text-align: right;">
+								{{ item.item_qty * item.item_rate }}
+							</td>
+							<td>{{ item.remarks }}</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+
+		<style type="text/css">
+			.index-1 {
+				height: 92vh;
+				display: block;
+				flex-wrap: nowrap;
+				justify-content: center;
+				/*text-align: center;*/
+				color: black;
+				font-weight: bold;
+				padding-top: 1vh;
+			}
+			a {
+				text-decoration: none;
+				color: inherit;
+			}
+
+			/* FOR INCREMENTING ROW SERIAL NUMBER */
+			table {
+			  counter-reset: rowNumber;
+			  table-layout: fixed;
+			  width: auto;
+			}
+
+			table tbody tr {
+			  counter-increment: rowNumber;
+			}
+
+			table tbody tr td:first-child::after {
+			  content: counter(rowNumber);
+			  min-width: 1em;
+			  margin-right: 0.5em;
+			}
+			/* ############################# */
+		</style>
+	</div>
+
+
+	<script type="text/javascript">
+		// PRINT PAGE
+		function printContent(el) {
+			var restorepage = document.body.innerHTML;
+			var printcontent = document.getElementById(el).innerHTML;
+			document.body.innerHTML = printcontent;
+			document.title = "Purchase List";
+			window.print();
+			document.body.innerHTML = restorepage;
+	    }
+
+	    // QUERY & FILL THE FORM BASED ON SELECTED ITEM CODE VALUE
+	    const item_code_selector = document.getElementById('item_code');
+	    item_code_selector.onchange = function(){
+	    	var selectedOption = this.getElementsByTagName('option')[this.selectedIndex].innerHTML;
+	    	// console.log(selectedOption);
+	    	if (selectedOption != 'Please Select Item Code'){
+	    		$.ajax({
+	    			url: "{{ url_for('update_form') }}", 
+	    			type: "POST", 
+	    			data: {"data": selectedOption}, 
+	    			success: function(result){
+	    				// console.log("Success! Received Data!");
+	    				document.getElementById('item_name').value = result['item_name'];
+	    				// document.getElementById('item_name').disabled = true;
+	    				document.getElementById('item_rate').value = result['item_rate'];
+	    				document.getElementById('available-qty').innerHTML = "Available Qty: " + result['item_qty'];
+	    			}, 
+	    			error: function(e){
+	    				console.log(e);
+	    			}
+	    		});
+	    	}
+	    	else{
+	    		document.getElementById('item_name').value = '';
+				document.getElementById('item_rate').value = 0;
+				document.getElementById('available-qty').innerHTML = '';
+	    		alert("Please Select From Item Codes!");
+	    	}
+	    };
+
+	    // SUM THE SUB-TOTAL COLUMN
+		var tds = document.getElementById('table').getElementsByTagName('td');
+		var sum_qty = 0;
+		var sum_sub_total = 0;
+		for(var i = 0; i < tds.length; i++) {
+			if(tds[i].className == 'length') {
+				tds[i].innerHTML = isNaN(tds[i].innerHTML) ? 0 : parseInt(tds[i].innerHTML).toLocaleString('en-US')
+				if(tds[i].innerHTML == 0) {
+					tds[i].innerHTML = '-'
+				}
+			}
+			if(tds[i].className == 'count-qty') {
+				sum_qty += isNaN(tds[i].innerHTML) ? 0 : parseInt(tds[i].innerHTML);
+				tds[i].innerHTML = isNaN(tds[i].innerHTML) ? 0 : parseInt(tds[i].innerHTML).toLocaleString('en-US')
+				if(tds[i].innerHTML == 0) {
+					tds[i].innerHTML = '-'
+				}
+			}
+			if(tds[i].className == 'rate') {
+				tds[i].innerHTML = isNaN(tds[i].innerHTML) ? 0 : parseInt(tds[i].innerHTML).toLocaleString('en-US')
+				if(tds[i].innerHTML == 0) {
+					tds[i].innerHTML = '-'
+				}
+			}
+			if(tds[i].className == 'count-sub-total') {
+				sum_sub_total += isNaN(tds[i].innerHTML) ? 0 : parseInt(tds[i].innerHTML);
+				tds[i].innerHTML = isNaN(tds[i].innerHTML) ? 0 : parseInt(tds[i].innerHTML).toLocaleString('en-US')
+				if(tds[i].innerHTML == 0) {
+					tds[i].innerHTML = '-'
+				}
+			}
+		}
+		document.getElementById('table').innerHTML += '<tfoot><tr style="text-align: center;"><th colspan="6">Grand Total</th><th style="text-align: right;">' + sum_qty.toLocaleString('us-US') + '</th><th></th><th style="text-align: right;">' + sum_sub_total.toLocaleString('us-US') + '</th></tr></tfoot>';
+
+	</script>
+
+{% endblock %}

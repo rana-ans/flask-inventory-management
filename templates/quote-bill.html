@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% block content %}
+
+	<div class="index-1" id="printdiv">
+
+		<div id="tablediv" class="shadow p-3 mb-5 rounded table-responsive">
+			<div class="container-project-icons" id="headingdv" style="text-align:center;">
+				<h1 style="text-decoration: underline;">ALL BILLS</h1>
+				<div style="display: flex; justify-content: space-between; padding-bottom: 0.5vh;">
+					<a href="{{ url_for('add_sale', id=0) }}" class="btn btn-info noprint">Add New Bill</a>
+					<a href="" class="btn btn-warning noprint" onclick="printContent('printdiv')">Print</a>
+				</div>
+			</div>
+			<table id="table" class="table table-light table-hover table-striped table-bordered" style="vertical-align: middle;">
+				<thead>
+					<tr style="text-align: center;">
+						<th style="width: 2.5vw;">Sr. #</th>
+						<th style="width: 3vw;" class="noprint">Action</th>
+						<th style="width: 6vw;">Invoice Date</th>
+						<th style="width: 4vw;">Invoice #</th>
+						<th style="width: 18vw;">Customer</th>
+						<th style="width: 5vw;">Sale Type</th>
+						<th style="width: 12vw;">Remarks</th>
+						<th class="noprint" style="width: 6vw;">Print</th>
+					</tr>
+				</thead>
+				<tbody class="table-group-divider">
+					{% for invoice in invoices %}
+						<tr>
+							<td></td>
+							<td class="noprint">
+								<a href="{{ url_for('update_invoice_details', id=invoice.id) }}" style="margin-right: 8px;">
+									<i class="fa fa-edit" style="color: black;"></i>
+								</a>
+								<a href="{{ url_for('delete_invoice', id=invoice.id) }}" onclick="return confirm('Are you sure you want to delete this item?')">
+									<i class="fa fa-trash" style="color: red;"></i>
+								</a>
+							</td>
+							<td>{{ invoice.invoice_date.strftime('%d-%b-%y') }}</td>
+							<td>{{ invoice.id }}</td>
+							<td>{{ invoice.customer }}</td>
+							<td>{{ invoice.sale_type }}</td>
+							<td>{{ invoice.remarks }}</td>
+							<td class="noprint" style="text-align: left;">
+								<a class="btn btn-primary" href="{{ url_for('create_quotation', id=invoice.id) }}" style="width: 8vw; margin-bottom: 0.5vh;">
+									Quotation
+								</a>
+								<a class="btn btn-info" href="{{ url_for('create_invoice', id=invoice.id) }}" style="width: 8vw">
+									Bill
+								</a>
+							</td> 
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+
+		<style type="text/css">
+			.index-1 {
+				height: 92vh;
+				display: block;
+				flex-wrap: nowrap;
+				justify-content: center;
+				text-align: center;
+				color: black;
+				font-weight: bold;
+				padding-top: 1vh;
+			}
+			a {
+				text-decoration: none;
+				color: inherit;
+			}
+
+			/* FOR INCREMENTING ROW SERIAL NUMBER */
+			table {
+			  counter-reset: rowNumber;
+			  table-layout: fixed;
+			  width: auto;
+			}
+
+			table tbody tr {
+			  counter-increment: rowNumber;
+			}
+
+			table tbody tr td:first-child::after {
+			  content: counter(rowNumber);
+			  min-width: 1em;
+			  margin-right: 0.5em;
+			}
+			/* ############################# */
+		</style>
+	</div>
+
+	<script type="text/javascript">
+		// PRINT PAGE
+		function printContent(el) {
+			var restorepage = document.body.innerHTML;
+			var printcontent = document.getElementById(el).innerHTML;
+			document.body.innerHTML = printcontent;
+			document.title = "LIST OF ALL BILLS";
+			window.print();
+			document.body.innerHTML = restorepage;
+	    }
+
+	</script>
+
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+	<div class="index-1">
+		<h1 style="text-decoration: underline;">EDIT ITEM</h1>
+		<form action="/shop/sale/update/{{ update_item.id }}" method="POST">
+
+			{{ form.hidden_tag() }}
+
+			{{ form.item_code.label(class="form-label") }}
+			<input class="form-control" name="item_code" id="item_code" value="{{ update_item.item_code }}" disabled>
+
+			{{ form.item_name.label(class="form-label") }}
+			{{ form.item_name(class="form-control", value=update_item.item_name, disabled=true) }}
+
+			{{ form.item_length.label(class="form-label") }}
+			{{ form.item_length(class="form-control", value=update_item.item_length) }}
+
+			{{ form.item_qty.label(class="form-label") }}
+			{{ form.item_qty(class="form-control", value=update_item.item_qty) }}
+
+			{{ form.item_rate.label(class="form-label") }}
+			{{ form.item_rate(class="form-control", value=update_item.item_rate) }}
+
+			<br>
+			{{ form.submit(class="btn btn-primary", value="UPDATE") }}
+
+			<a href="{{ url_for('sale') }}" class="btn btn-danger" style="float: right;">Cancel</a>
+		</form>
+
+	</div>
+
+
+	<style type="text/css">
+		.index-1 {
+			height: 92vh;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			color: black;
+			font-weight: bold;
+			padding-top: 1vh;
+		}
+		form {
+			/*text-align: center;*/
+			width: 40vh;
+		}
+
+	</style>
+	
+{% endblock %}

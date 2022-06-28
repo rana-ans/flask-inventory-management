@@ -1,0 +1,9 @@
+@media print {
+	.noprint {
+		display: none;
+	}
+	body {
+		-webkit-print-color-adjust: none;
+		zoom: 90%;
+	}
+}

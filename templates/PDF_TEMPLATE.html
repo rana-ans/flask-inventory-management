@@ -1,0 +1,389 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    	<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    	<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.bundle.min.js"></script>
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+        <title>INVOICE PAGE</title>
+
+    </head>
+    <body>
+        <div class="container">
+            <div style="display: flex; justify-content: space-between;">
+                <button type="button" class="btn btn-dark noprint" onclick="printContent()">Print</button>
+                <a href="{{ url_for('quote_bill') }}" class="btn noprint" type="button"><i class="fa fa-close"></i></a>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <div id="invoice">
+                        <div class="invoice overflow-auto">
+                            <div style="min-width: 600px">
+                                <header>
+                                    <h2>{{ invoice_type }}</h2>
+                                </header>
+                                <main>
+                                    <div class="row contacts">
+                                        <div class="col invoice-to">
+                                            <h2 class="to">
+                                                {{ customer_name }}
+                                            </h2>
+                                            <div class="address">
+                                                {{ customer_address }}
+                                            </div>
+                                        </div>
+                                        <div class="col invoice-details">
+                                            <h1 class="invoice-id" id="invoice-no">
+                                                {{ invoice_type}} # {{ invoice.id }}
+                                            </h1>
+                                            <div class="date">
+                                                {{ invoice.invoice_date.strftime('%A - %B %d, %Y') }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <table id="table">
+                                        <thead>
+                                            <tr style="text-align: center;">
+                                                <th style="width: 3vw;">#</th>
+                                                <th style="width: 20vw;">
+                                                    ITEM DESCRIPTION
+                                                </th>
+                                                <th style="width: 8vw;">
+                                                    Length
+                                                </th>
+                                                <th style="width: 8vw;">
+                                                    Quantity
+                                                </th>
+                                                <th style="width: 10vw;">
+                                                    Rate
+                                                </th>
+                                                <th style="width: 12vw;">
+                                                    Sub-Total
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for item in items %}
+                                                <tr>
+                                                    <td style="text-align: center;"></td>
+                                                    <td class="text-left">
+                                                        {{ item.item_name }}
+                                                    </td>
+                                                    <td class="length">
+                                                        {{ item.item_length }}
+                                                    </td>
+                                                    <td class="qty">
+                                                        {{ item.item_qty }}
+                                                    </td>
+                                                    <td class="rate">
+                                                        {{ item.item_rate }}
+                                                    </td>
+                                                    <td class="sub-total">
+                                                        {{ item.item_qty * item.item_rate }}
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td colspan="2">Total</td>
+                                                <td id="total"></td>
+                                            </tr>
+                                            {% if invoice.discount %}
+                                                <tr>
+                                                    <td colspan="3"></td>
+                                                    <td colspan="2">DISCOUNT</td>
+                                                    <td id="discount">{{ invoice.discount }}</td>
+                                                </tr>
+                                            {% else %}
+                                                <tr hidden>
+                                                    <td colspan="3"></td>
+                                                    <td colspan="2">DISCOUNT</td>
+                                                    <td id="discount">{{ invoice.discount }}</td>
+                                                </tr>
+                                            {% endif %}
+                                            <tr>
+                                                <td colspan="3"></td>
+                                                <td colspan="2" style="font-weight: bold;">
+                                                    GRAND TOTAL
+                                                </td>
+                                                <td id="grand-total"></td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                    <div class="thanks">
+                                        <textarea rows="5">{{ invoice.remarks }}</textarea>
+                                    </div>
+                                </main>
+                                <footer>Thank You For Your Business!</footer>
+                                <div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <style type="text/css">
+            body{
+                margin-top: 1px;
+            }
+            #invoice {
+                padding: 0px;
+            }
+
+            .invoice {
+                position: relative;
+                background-color: #FFF;
+                min-height: 600px;
+                padding: 15px;
+            }
+
+            .invoice header {
+                margin-bottom: 10px;
+                border: 1px solid black;
+                background-color: black;
+                text-align: center;
+                color: ghostwhite;
+                text-transform: uppercase;
+            }
+
+            .invoice .contacts {
+                text-transform: capitalize;
+                margin-bottom: 10px;
+            }
+
+            .invoice .invoice-to {
+                text-align: left;
+                margin-top: 5px;
+            }
+
+            .invoice .invoice-to .to {
+                margin-top: 0;
+                margin-bottom: 0;
+            }
+
+            .invoice .invoice-to .address {
+                font-size: 2.5vh;
+            }
+
+            .invoice .invoice-details {
+                text-align: right;
+            }
+
+            .invoice .invoice-details .invoice-id {
+                margin-top: 0;
+                color: black;
+            }
+
+            .invoice .invoice-details .date {
+                font-size: 2.5vh;
+            }
+
+            .invoice main {
+                padding-bottom: 25px;
+            }
+
+            .invoice main .thanks {
+                margin-top: -70px;
+                /*margin-bottom: 5px;*/
+                width: 8vw;
+            }
+
+            .invoice main .thanks textarea {
+                border:  none;
+                resize: none;
+                font-size: 2vh;
+            }
+
+            .invoice table {
+                width: 100%;
+                border-collapse: collapse;
+                border-spacing: 0;
+                margin-bottom: 20px;
+            }
+
+            .invoice table td,
+            .invoice table th {
+                padding: 10px;
+                background: #eee;
+                border-bottom: 1px solid #fff;
+            }
+
+            .invoice table th {
+                white-space: nowrap;
+                font-weight: bold;
+                font-size: 2.5vh;
+            }
+
+            .invoice table .length, 
+            .invoice table .rate, 
+            .invoice table .sub-total, 
+            .invoice table .qty {
+                text-align: right;
+            }
+
+            .invoice table tbody tr {
+                font-size: 2.5vh;
+            }
+
+            .invoice table tbody tr:last-child td {
+                border: none;
+            }
+
+            .invoice table tfoot td {
+                background: 0 0;
+                border-bottom: none;
+                white-space: nowrap;
+                text-align: right;
+                padding: 10px 20px;
+                border-top: 1px solid #aaa;
+                font-size: 2.5vh;
+            }
+
+            .invoice table tfoot tr:first-child td {
+                border-top: none;
+            }
+            .card {
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                min-width: 0;
+                word-wrap: break-word;
+                background-color: #fff;
+                background-clip: border-box;
+                border: 0px solid rgba(0, 0, 0, 0);
+                border-radius: .25rem;
+                margin-bottom: 1.5rem;
+                box-shadow: 0 2px 6px 0 rgb(218 218 253 / 65%), 0 2px 6px 0 rgb(206 206 238 / 54%);
+            }
+
+            .invoice table tfoot tr:last-child td {
+                color: black;
+                border-top: 1.5px solid black;
+            }
+
+            .invoice table tfoot tr td:first-child {
+                border: none;
+            }
+
+            .invoice footer {
+                font-size: 2.5vh;
+                width: 100%;
+                text-align: center;
+                color: #777;
+                border-top: 1px solid #aaa;
+                padding: 8px 0;
+            }
+
+            @media print {
+                @page {
+                    size: A4;
+                    margin-top: 2.4in;
+                }
+                body {
+                    -webkit=print-color-adjust: exact;
+                }
+                .noprint {
+                    display: none;
+                }
+                .invoice {
+                    font-size: 11px !important;
+                    overflow: hidden !important;
+                }
+                thead {
+                    page-break-inside: avoid;
+                }
+                .invoice footer {
+                    position: absolute;
+                    bottom: 10px;
+                    page-break-after: always;
+                }
+                .invoice>div:last-child {
+                    page-break-before: always;
+                }
+            }
+
+            .invoice main .notices {
+                padding-left: 6px;
+                border-left: 6px solid #0d6efd;
+                background: #e7f2ff;
+                padding: 10px;
+            }
+            /* FOR INCREMENTING ROW SERIAL NUMBER */
+            table {
+                counter-reset: rowNumber;
+                table-layout: fixed;
+                width: auto;
+            }
+
+            table tbody tr {
+                counter-increment: rowNumber;
+            }
+
+            table tbody tr td:first-child::after {
+                content: counter(rowNumber);
+            }
+            /* ############################# */
+        </style>
+
+        <script type="text/javascript">
+            // PRINT PAGE
+            function printContent() {
+                var restorepage = document.body.innerHTML;
+                var printcontent = document.body.innerHTML;
+                document.body.innerHTML = printcontent;
+                document.title = document.getElementById('invoice-no').innerHTML;
+                window.print();
+                document.body.innerHTML = restorepage;
+            }
+
+            // SUM THE SUB-TOTAL COLUMN
+            var tds = document.getElementById('table').getElementsByTagName('td');
+            var sum_sub_total = 0;
+            for(var i = 0; i < tds.length; i++) {
+                if(tds[i].className == 'length') {
+                    tds[i].innerHTML = isNaN(tds[i].innerHTML) ? 0 : parseInt(tds[i].innerHTML).toLocaleString('en-US')
+                    if(tds[i].innerHTML == 0) {
+                        tds[i].innerHTML = '-'
+                    }
+                }
+                if(tds[i].className == 'qty') {
+                    tds[i].innerHTML = isNaN(tds[i].innerHTML) ? 0 : parseInt(tds[i].innerHTML).toLocaleString('en-US')
+                    if(tds[i].innerHTML == 0) {
+                        tds[i].innerHTML = '-'
+                    }
+                }
+                if(tds[i].className == 'rate') {
+                    tds[i].innerHTML = isNaN(tds[i].innerHTML) ? 0 : parseInt(tds[i].innerHTML).toLocaleString('en-US')
+                    if(tds[i].innerHTML == 0) {
+                        tds[i].innerHTML = '-'
+                    }
+                }
+                if(tds[i].className == 'sub-total') {
+                    sum_sub_total += isNaN(tds[i].innerHTML) ? 0 : parseInt(tds[i].innerHTML);
+                    tds[i].innerHTML = isNaN(tds[i].innerHTML) ? 0 : parseInt(tds[i].innerHTML).toLocaleString('en-US')
+                    if(tds[i].innerHTML == 0) {
+                        tds[i].innerHTML = '-'
+                    }
+                }
+            }
+            document.getElementById('total').innerHTML = sum_sub_total.toLocaleString('en-US');
+            if(document.getElementById('discount')) {
+                discount = document.getElementById('discount').innerHTML;
+                document.getElementById('grand-total').innerHTML = (sum_sub_total-discount).toLocaleString('en-US');
+            }
+            else {
+                document.getElementById('grand-total').innerHTML = sum_sub_total.toLocaleString('en-US');
+            }
+
+        </script>
+    </body>
+</html>

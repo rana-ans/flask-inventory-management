@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+	<div class="index-1">
+		<div id="inventory" style="font-weight: bold; color: antiquewhite; font-size: 5vh;">
+			<a href="{{ url_for('inventory') }}">
+				<img src="{{ url_for('static', filename='images/inventory.png') }}" style="height: 100%;">
+				Inventory
+			</a>
+		</div>
+		<div style="font-weight: bold; color: antiquewhite; font-size: 5vh;">
+			<img src="{{ url_for('static', filename='images/purchase-sale.jpg') }}" style="height: 100%;">
+			<button type="button" class="btn btn-warning purchase-btn" style="font-size: 3vh;">
+				<a href="{{ url_for('purchase') }}">Add Purchase</a>
+			</button>
+			<button type="button" class="btn btn-warning sale-btn" style="font-size: 3vh;">
+				<a href="{{ url_for('sale') }}">Add Sale</a>
+			</button>
+			Purchase & Sale
+		</div>
+		<div style="font-weight: bold; color: antiquewhite; font-size: 5vh;">
+			<a href="{{ url_for('quote_bill') }}">
+				<img src="{{ url_for('static', filename='images/quote-bill.jpg') }}" style="height: 100%;">
+				Invoices
+			</a>
+		</div>
+	</div>
+
+
+	<style type="text/css">
+		.index-1 {
+			height: 92vh;
+			display: flex;
+			flex-wrap: nowrap;
+			justify-content: center;
+			align-items: center;
+		}
+		.index-1 > div {
+			width: 40%;
+			height: 40%;
+			text-align: center;
+			background-color: antiquewhite;
+			margin: 5vh;
+			/*margin-top: 25vh;*/
+		}
+		.index-1 > div > a {
+			text-decoration: none;
+			color: inherit;
+		}
+		.index-1 > div:hover {
+			transform: scale(1.1);
+		}
+		.index-1 > div:hover > img {
+			filter: blur(2px);
+		}
+		.btn {
+			display: none;
+		}
+		.btn > a {
+			text-decoration: none;
+			color: inherit;
+		}
+		.index-1 > div:hover .purchase-btn {
+			display: flex;
+			position: absolute;
+			text-align: center;
+			margin-top: -25vh;
+			margin-left: 16vh;
+		}
+		.index-1 > div:hover .sale-btn {
+			display: flex;
+			position: absolute;
+			text-align: center;
+			margin-top: -15vh;
+			margin-left: 20vh;
+		}
+	</style>
+	
+{% endblock %}

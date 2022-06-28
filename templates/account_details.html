@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+	<div class="index-1" id="printdiv">
+		<div id="tablediv" class="shadow p-3 mb-5 rounded table-responsive">
+			<div class="container-project-icons" id="headingdv" style="text-align:center;">
+				<h1 style="text-decoration: underline;">{{ account_title }}</h1>
+				<h2 style="text-decoration: underline;">DETAILS</h2>
+				<div style="text-align: right;">
+					<a href="" class="btn btn-warning noprint" onclick="printContent('printdiv')">Print</a>
+				</div>
+			</div>
+			<table id="table" class="table" style="vertical-align: middle;">
+				<thead>
+					<tr style="text-align: center;">
+						<th style="width: 6vh;">Sr. #</th>
+						<th style="width: 12vh;">Date Added</th>
+						<th style="width: 16vh;">Payer</th>
+						<th style="width: 16vh;">Beneficiary</th>
+						<th style="width: 40vh;">Description</th>
+						<th style="width: 14vh;">Debit</th>
+						<th style="width: 14vh;">Credit</th>
+						<th style="width: 10vh;">TX Tax</th>
+						<th style="width: 16vh;">Balance</th>
+					</tr>
+				</thead>
+				<tbody class="table-group-divider">
+					{% for detail in details %}
+						<tr>
+							<td></td>
+							<td>{{ detail.dated.strftime('%d-%b-%y') }}</td>
+							<td>{{ detail.payer }}</td>
+							<td>{{ detail.beneficiary }}</td>
+							<td>{{ detail.description }}</td>
+							<td style="text-align: right;" class="debit">{{ detail.debit }}</td>
+							<td style="text-align: right;" class="credit">{{ detail.credit }}</td>
+							<td style="text-align: right;" class="tx-tax">{{ detail.tx_tax }}</td>
+							<td style="text-align: right;" class="balance"></td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+ 
+		<style type="text/css">
+			.index-1 {
+				height: 92vh;
+				display: block;
+				flex-wrap: nowrap;
+				justify-content: center;
+				text-align: center;
+				color: black;
+				font-weight: bold;
+				padding-top: 1vh;
+			}
+			a {
+				text-decoration: none;
+				color: inherit;
+			}
+
+			/* FOR INCREMENTING ROW SERIAL NUMBER */
+			table {
+			  counter-reset: rowNumber;
+			  table-layout: fixed;
+			  width: auto;
+			}
+
+			table tbody tr {
+			  counter-increment: rowNumber;
+			  font-weight: 200;
+			}
+
+			table tbody tr td:first-child::after {
+			  content: counter(rowNumber);
+			  min-width: 1em;
+			  margin-right: 0.5em;
+			}
+			/* ############################# */
+		</style>
+	</div>
+
+
+	<script type="text/javascript">
+		// PRINT PAGE
+		function printContent(el) {
+			var restorepage = document.body.innerHTML;
+			var printcontent = document.getElementById(el).innerHTML;
+			document.body.innerHTML = printcontent;
+			document.title = "ACCOUNT DETAILS";
+			window.print();
+			document.body.innerHTML = restorepage;
+	    }
+
+	    // CALCULATE BALANCE
+		var tds = document.getElementById('table').getElementsByTagName('td');
+		var sum_debit = 0, sum_credit=0, sum_tx_tax=0;
+		var balance = 0;
+		for(var i = 0; i < tds.length; i++) {
+			if(tds[i].className == 'debit') {
+				sum_debit += isNaN(tds[i].innerHTML) ? 0 : parseInt(tds[i].innerHTML);
+				balance -= isNaN(tds[i].innerHTML) ? 0 : parseInt(tds[i].innerHTML);
+				tds[i].innerHTML = isNaN(tds[i].innerHTML) ? 0 : parseInt(tds[i].innerHTML).toLocaleString('en-US');
+				if(tds[i].innerHTML == 0) {
+					tds[i].innerHTML = '-';
+				}
+			}
+			if(tds[i].className == 'credit') {
+				sum_credit += isNaN(tds[i].innerHTML) ? 0 : parseInt(tds[i].innerHTML);
+				balance += isNaN(tds[i].innerHTML) ? 0 : parseInt(tds[i].innerHTML);
+				tds[i].innerHTML = isNaN(tds[i].innerHTML) ? 0 : parseInt(tds[i].innerHTML).toLocaleString('en-US');
+				if(tds[i].innerHTML == 0) {
+					tds[i].innerHTML = '-';
+				}
+			}
+			if(tds[i].className == 'tx-tax') {
+				sum_tx_tax += isNaN(tds[i].innerHTML) ? 0 : parseInt(tds[i].innerHTML);
+				balance -= isNaN(tds[i].innerHTML) ? 0 : parseInt(tds[i].innerHTML);
+				tds[i].innerHTML = isNaN(tds[i].innerHTML) ? 0 : parseInt(tds[i].innerHTML).toLocaleString('en-US');
+				if(tds[i].innerHTML == 0) {
+					tds[i].innerHTML = '-';
+				}
+			}
+			if(tds[i].className == 'balance') {
+				tds[i].innerHTML = balance;
+				tds[i].innerHTML = isNaN(tds[i].innerHTML) ? 0 : parseInt(tds[i].innerHTML).toLocaleString('en-US');
+				if(tds[i].innerHTML == 0) {
+					tds[i].innerHTML = '-';
+				}
+			}
+		}
+		document.getElementById('table').innerHTML += '<tfoot><tr style="text-align: center;"><th colspan="5">Total</th><th style="text-align: right;">' 
+		+ sum_debit.toLocaleString('us-US') 
+		+ '</th><th style="text-align: right;">' 
+		+ sum_credit.toLocaleString('en-US') 
+		+ '</th><th style="text-align: right;">' 
+		+ sum_tx_tax.toLocaleString('us-US') 
+		+ '</th><th style="text-align: right;">' 
+		+ (sum_credit-sum_debit-sum_tx_tax).toLocaleString('en-US') 
+		+ '</th></tr></tfoot>';
+
+	</script>
+
+{% endblock %}
