@@ -1,23 +1,23 @@
-#################################
-############# INTRO #############
-#################################
-THIS IS A SIMPLE, STRAIGHT FORWARD, KIND OF A POINT OF SALE
-BUT MORE LIKE AN INVENTORY MANAGEMENT SYSTEM WHERE WE CAN ADD
-INVENTORY, ADD PURCHASES & SALES OF ITEMS AGAINST THE INVENTORY.
-EASY TO CREATE QUOTATIONS AND INVOICES IN HTML AND YOU CAN 
-PRINT THEM IN PDF OR 
-STRAIGHT TO PAPER (WHICH IS NOT RECOMMENDED - STAY GREEN)
-
-#################################
-DEVELOPED IN PYTHON - FLASK
-USED HTML TEMPLATES, CSS AND JAVASCRIPT.
-#################################
-
-#################################
-############# SETUP #############
-#################################
-
-- INSTALL MYSQL, SETUP A DATABASE
+#################################  
+############# INTRO #############  
+#################################  
+THIS IS A SIMPLE, STRAIGHT FORWARD, KIND OF A POINT OF SALE  
+BUT MORE LIKE AN INVENTORY MANAGEMENT SYSTEM WHERE WE CAN ADD  
+INVENTORY, ADD PURCHASES & SALES OF ITEMS AGAINST THE INVENTORY.  
+EASY TO CREATE QUOTATIONS AND INVOICES IN HTML AND YOU CAN  
+PRINT THEM IN PDF OR  
+STRAIGHT TO PAPER (WHICH IS NOT RECOMMENDED - STAY GREEN)  
+  
+#################################  
+DEVELOPED IN PYTHON - FLASK  
+USED HTML TEMPLATES, CSS AND JAVASCRIPT.  
+#################################  
+  
+#################################  
+############# SETUP #############  
+#################################  
+  
+- INSTALL MYSQL, SETUP A DATABASE  
 - DO REMEMBER ROOT USER & PASSWORD FOR THE MYSQL
 - EDIT 'create_database.py' AND UPDATE THE FILE WITH REQUIRED DATA
 - NOW CREATE A VIRTUAL ENVIRONMENT AND ACTIVATE IT
