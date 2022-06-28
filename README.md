@@ -9,7 +9,7 @@ PRINT THEM IN PDF OR
 STRAIGHT TO PAPER (WHICH IS NOT RECOMMENDED - STAY GREEN)  
   
 #################################  
-DEVELOPED IN PYTHON - FLASK  
+DEVELOPED IN PYTHON - FLASK - MySQL  
 USED HTML TEMPLATES, CSS AND JAVASCRIPT.  
 #################################  
   
