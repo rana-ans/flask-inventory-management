@@ -28,7 +28,7 @@ USED HTML TEMPLATES, CSS AND JAVASCRIPT.
 	OUTPUT WILL BE: 'ALL DEFINED TABLES WERE CREATED!'  
 	RUN: 'exit()'  
 - NOW BACK IN OUR VIRTUAL ENVIRONMENT:  
-	RUN: 'git clone <LINK TO THIS PROJECT GIT REPOSITORY>'  
+	RUN: 'git clone github.com/rana-ans/flask-inventory-management.git'  
 	RUN: 'pip install -r requirements.txt'  
 	THIS SHOULD INSTALL ALL THE REQUIRED LIBRARIES TO RUN OUR PROJECT (HOPEFULLY)  
   
@@ -40,7 +40,6 @@ P.S. 	-	THERE COULD STILL BE SOME BUGS THAT I MIGHT IMPROVE IF I COME ACCROSS TH
 #################################  
 ############# CREDITS ############  
 #################################  
-  
 DEVELOPED & UPLOADED BY RANA_ANS  
 PLEASE GIVE CREDITS IF YOU DO COPY.  
   
