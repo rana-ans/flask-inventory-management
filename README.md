@@ -1,5 +1,5 @@
 #################################  
-############# INTRO #############  
+############# INTRO ##############  
 #################################  
 THIS IS A SIMPLE, STRAIGHT FORWARD, KIND OF A POINT OF SALE  
 BUT MORE LIKE AN INVENTORY MANAGEMENT SYSTEM WHERE WE CAN ADD  
@@ -14,7 +14,7 @@ USED HTML TEMPLATES, CSS AND JAVASCRIPT.
 #################################  
   
 #################################  
-############# SETUP #############  
+############# SETUP ##############  
 #################################  
   
 - INSTALL MYSQL, SETUP A DATABASE  
@@ -38,7 +38,7 @@ P.S. 	-	THERE COULD STILL BE SOME BUGS THAT I MIGHT IMPROVE IF I COME ACCROSS TH
 			SYSTEM AND I DO SEND SOME 'NOT SERIOUS' DATA IN LINK ROUTES, SO ONLY USE THIS ON YOUR LOCAL MACHINE/LOCAL NETWORK.  
   
 #################################  
-############ CREDITS ############  
+############ CREDITS #############  
 #################################  
   
 DEVELOPED & UPLOADED BY RANA_ANS  
